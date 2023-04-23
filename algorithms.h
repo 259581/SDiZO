@@ -6,5 +6,5 @@
 #define SDIZO_ALGORITHMS_H
 void bubbleSort(int*, int);
 void quickSort(int*, int);
-void countingSort(int*, int);
+void positioningSort(int*, int);
 #endif //SDIZO_ALGORITHMS_H

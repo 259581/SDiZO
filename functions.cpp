@@ -8,9 +8,8 @@
 #include <fstream>
 #include <time.h>
 #include <vector>
-//#include <thread>
 #include <unistd.h>
-//#include <Windows.h>
+#include <thread>
 
 void readConfig(std::string fileName, int rows, std::string *configs){
     std::fstream file;
@@ -67,6 +66,7 @@ void workingLoop(int repetition, int *array, std::string readFile, std::string s
         exit(2);
     }
     file.close();
+
 }
 
 int algorithmName(std::string name){
@@ -74,30 +74,29 @@ int algorithmName(std::string name){
         return 1;
     }else if(name == "quicksort") {
         return 2;
-    }else if(name == "countingsort"){
+    }else if(name == "positioning"){
         return 3;
     }else{
         return 0;
     }
 }
 
-void printingProgress(bool *should_animate){
+void printingProgress(){
     using namespace std::chrono_literals;
-    while(*should_animate) {
         //std::this_thread::sleep_for(100ms);
-        sleep(.1);
+        //sleep(.1);
         std::cout << "\b\\" << std::flush;
         //std::this_thread::sleep_for(100ms);
-        sleep(.1);
+        //sleep(.1);
         std::cout << "\b|" << std::flush;
         //std::this_thread::sleep_for(100ms);
-        sleep(.1);
+        //sleep(.1);
         std::cout << "\b/" << std::flush;
         //std::this_thread::sleep_for(100ms);
-        sleep(.1);
+        //sleep(.1);
         std::cout << "\b-" << std::flush;
         //std::this_thread::sleep_for(100ms);
-    }
+
 }
 
 void saveModifiedNumbers(std::string fileName, int array[], int amount){
@@ -113,10 +112,16 @@ void saveModifiedNumbers(std::string fileName, int array[], int amount){
     }
 }
 
-void displayArray(int arr[], int size)
-{
-    int i;
-    for (i=0; i < size-1; i++)
+void displayArray(int arr[], int size){
+    for (int i=0; i < size-1; i++)
         std::cout<<arr[i]<<"\n";
 
+}
+void show_loading_bar() {
+
+    while (true) {
+        std::cout << ". ";
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
 }

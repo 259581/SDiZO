@@ -4,12 +4,9 @@
 
 #include "algorithms.h"
 #include "functions.h"
-#include <thread>
 
 void bubbleSort(int *array, int instance){
     int buff = 0;
-    bool should_animate = true;
-    std::thread animation(printingProgress,&should_animate);
     for (int i = 0; i < instance+1; i++) {
         for (int j = 1; j < instance; j++) {
             if (array[j - 1] > array[j]) {
@@ -21,8 +18,6 @@ void bubbleSort(int *array, int instance){
         }
         //printf("\e[1;1H\e[2J"); /* for clearing console */
     }
-    should_animate = false;
-    animation.join();
 }
 
 void quickSort(int* array, int size) {
@@ -32,8 +27,6 @@ void quickSort(int* array, int size) {
     int i = 0, j = size - 1;
     int contain = 0;
     int pivot = array[(0 + size - 1) / 2];
-    bool should_animate = true;
-    std::thread animation(printingProgress,&should_animate);
     while (i <= j) {
         while (array[i] < pivot)
             i++;
@@ -47,42 +40,43 @@ void quickSort(int* array, int size) {
             j--;
         }
     }
-    should_animate = false;
-    animation.join();
     quickSort(array, j + 1);
     quickSort(array + i, size - i);
 }
 
-void countingSort(int* array, int size){
+void positioningSort(int* array, int size) {
     int max = array[0];
-    for(int i = 0; i<size-1; i++){  //znajdowanie max w tablicy
-        if(array[i]>max){
+    int min = array[0];
+    for (int i = 1; i < size; i++) {
+        if (array[i] > max) {
             max = array[i];
         }
+        if (array[i] < min) {
+            min = array[i];
+        }
     }
-
-    int appears[max];   //tablica wystapien
-    for(int i = 0; i<max-1; i++){
-        appears[i] = 0;
+    int* output = (int*)malloc(size * sizeof(int));
+    int* count = (int*)calloc(10, sizeof(int));
+    for (int exp = 1; (max - min) / exp > 0; exp *= 10) {
+        for (int i = 0; i < size; i++) {
+            int digit = (array[i] - min) / exp % 10;
+            count[digit]++;
+        }
+        for (int i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+        for (int i = size - 1; i >= 0; i--) {
+            int digit = (array[i] - min) / exp % 10;
+            output[count[digit] - 1] = array[i];
+            count[digit]--;
+        }
+        for (int i = 0; i < size; i++) {
+            array[i] = output[i];
+        }
+        for (int i = 0; i < 10; i++) {
+            count[i] = 0;
+        }
     }
-
-    for(int i = 0 ; i < size ; ++i){
-        ++appears[array[i]];
-    }
-
-    for(int i = 1 ; i < max ; ++i){
-        appears[i] += appears[i - 1];
-    }
-    int pomocnicza[max];
-    for(int i = 0; i<max-1; i++){
-        pomocnicza[i] = 0;
-    }
-
-    for(int i = size-1 ; i >= 0 ; --i) {
-        pomocnicza[--appears[array[i]]] = array[i];  //POMOCNICZA MOZE?
-    }
-
-    for(int i = 0; i<max-1; i++){
-        printf("%d\n",pomocnicza[i]);
-    }
+    free(output);
+    free(count);
 }
