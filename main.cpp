@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-#include <thread>
 #include "functions.h"  // header file
 #include "algorithms.h" //header file
 

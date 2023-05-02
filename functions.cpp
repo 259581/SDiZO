@@ -8,8 +8,6 @@
 #include <fstream>
 #include <time.h>
 #include <vector>
-#include <unistd.h>
-#include <thread>
 
 void readConfig(std::string fileName, int rows, std::string *configs){
     std::fstream file;
@@ -41,9 +39,12 @@ void readNumbers(std::string fileName, int *array, int amount){
 }
 
 void workingLoop(int repetition, int *array, std::string readFile, std::string saveFile, void (*f)(int*,int), std::vector<int> instance){
+    std::string progress_bar;
+    double percentage = 0;
     double time = 0.0;
     int size = instance.size();
     double average = 0.0;
+    double progress_level = 100/double(repetition*size);
     std::fstream file;
     file.open(saveFile,std::ios::out);
     if (file.is_open()){
@@ -57,14 +58,20 @@ void workingLoop(int repetition, int *array, std::string readFile, std::string s
             time = (time/CLOCKS_PER_SEC)*1000;
             file << time << std::endl;
             average += time;
+            percentage += progress_level;
+            progress_bar.insert(0,1, '#');
+            std::cout << "\r [" << std::floor(percentage) << '%' << "] " << progress_bar;
         }
         average = average/repetition;
         file << average << "\t" << instance[i] << "\t" << "average time|instance size" << std::endl;
+        average = 0;
     }
     }else {
         printf("Something went wrong, couldn't open the file\n");
         exit(2);
     }
+    file.close();
+    std::cout << "\n\n";
     file.close();
 
 }
@@ -79,24 +86,6 @@ int algorithmName(std::string name){
     }else{
         return 0;
     }
-}
-
-void printingProgress(){
-    using namespace std::chrono_literals;
-        //std::this_thread::sleep_for(100ms);
-        //sleep(.1);
-        std::cout << "\b\\" << std::flush;
-        //std::this_thread::sleep_for(100ms);
-        //sleep(.1);
-        std::cout << "\b|" << std::flush;
-        //std::this_thread::sleep_for(100ms);
-        //sleep(.1);
-        std::cout << "\b/" << std::flush;
-        //std::this_thread::sleep_for(100ms);
-        //sleep(.1);
-        std::cout << "\b-" << std::flush;
-        //std::this_thread::sleep_for(100ms);
-
 }
 
 void saveModifiedNumbers(std::string fileName, int array[], int amount){
@@ -116,12 +105,4 @@ void displayArray(int arr[], int size){
     for (int i=0; i < size-1; i++)
         std::cout<<arr[i]<<"\n";
 
-}
-void show_loading_bar() {
-
-    while (true) {
-        std::cout << ". ";
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    }
 }

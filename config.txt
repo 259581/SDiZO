@@ -1,6 +1,6 @@
 /Users/maciejrudy/CLionProjects/SDiZO/liczby.txt
 modifiedNumbers.csv
-positioning
+bubblesort
 elapsedTime.txt
-100
-10000
+10
+1000000
